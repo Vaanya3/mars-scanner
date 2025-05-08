@@ -3,16 +3,23 @@ import pandas as pd
 import ta
 import requests
 import os
+import re
 
 # === CONFIGURATION ===
 TELEGRAM_BOT_TOKEN = os.getenv("TELEGRAM_BOT_TOKEN")
 TELEGRAM_CHAT_ID = os.getenv("TELEGRAM_CHAT_ID")
 
-# === STOCK LIST (can be expanded) ===
-INDIAN_STOCKS = [
-    'RELIANCE', 'HDFCBANK', 'INFY', 'ICICIBANK', 'TCS', 'LT',
-    'SBIN', 'AXISBANK', 'KOTAKBANK', 'BHARTIARTL'
-]
+# === STOCK LIST FROM DOWNLOADED DATASET FOLDER ===
+def get_stock_list_from_files(folder="nifty500_dataset"):
+    stock_files = os.listdir(folder)
+    symbols = []
+    for fname in stock_files:
+        match = re.match(r"\d+_(\w+)\.csv", fname)
+        if match:
+            symbols.append(match.group(1).upper())
+    return symbols
+
+INDIAN_STOCKS = get_stock_list_from_files()
 
 # === FUNCTIONS ===
 def fetch_data(stock_symbol, period='3mo', interval='1d'):
@@ -77,6 +84,11 @@ def main():
         message = "\n".join([f"\u2705 Potential breakout: *{stock}*" for stock in candidates])
     else:
         message = "\u26A0 No breakout candidates found today."
+
+    print("\n=== SCAN RESULT ===")
+    print(message)
+    print("===================")
+
     send_telegram_message(message)
 
 if __name__ == '__main__':
