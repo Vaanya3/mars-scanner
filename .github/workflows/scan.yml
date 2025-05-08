@@ -1,4 +1,4 @@
-name: Run Stock Scanner
+name: Run Indian Stock Breakout Scanner
 
 on:
   workflow_dispatch:
@@ -24,7 +24,7 @@ jobs:
     - name: Clone NIFTY500 Dataset
       run: git clone https://github.com/Ratnesh-bhosale/NIFTY500_dataset.git nifty500_dataset
 
-    - name: Run scanner
+    - name: Run breakout scanner
       env:
         TELEGRAM_BOT_TOKEN: ${{ secrets.TELEGRAM_BOT_TOKEN }}
         TELEGRAM_CHAT_ID: ${{ secrets.TELEGRAM_CHAT_ID }}
